@@ -1,0 +1,62 @@
+PATH
+  remote: .
+  specs:
+    ocr (0.1.0)
+      mini_magick (~> 4.11)
+      rtesseract (~> 2.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    Ascii85 (2.0.1)
+    afm (0.2.2)
+    bigdecimal (3.3.1)
+    byebug (12.0.0)
+    diff-lcs (1.6.2)
+    hashery (2.1.2)
+    mini_magick (4.13.2)
+    mini_portile2 (2.8.9)
+    nokogiri (1.18.10)
+      mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
+    pdf-reader (2.15.0)
+      Ascii85 (>= 1.0, < 3.0, != 2.0.0)
+      afm (>= 0.2.1, < 2)
+      hashery (~> 2.0)
+      ruby-rc4
+      ttfunk
+    racc (1.8.1)
+    rake (13.3.0)
+    rspec (3.13.1)
+      rspec-core (~> 3.13.0)
+      rspec-expectations (~> 3.13.0)
+      rspec-mocks (~> 3.13.0)
+    rspec-core (3.13.5)
+      rspec-support (~> 3.13.0)
+    rspec-expectations (3.13.5)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-mocks (3.13.6)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-support (3.13.6)
+    rtesseract (2.2.0)
+      nokogiri
+    ruby-rc4 (0.1.5)
+    ttfunk (1.8.0)
+      bigdecimal (~> 3.1)
+
+PLATFORMS
+  x86_64-linux
+
+DEPENDENCIES
+  byebug
+  mini_magick
+  ocr!
+  pdf-reader
+  rake (~> 13.0)
+  rspec
+  rtesseract
+
+BUNDLED WITH
+   2.4.12
