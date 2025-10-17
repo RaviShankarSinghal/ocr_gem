@@ -34,10 +34,12 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Common dependencies for OCR-based Ruby gems
-  spec.add_dependency "rtesseract", "~> 2.0"      # Ruby wrapper for Tesseract OCR
-  spec.add_dependency "mini_magick", "~> 4.11"    # Image preprocessing support
+  # Runtime dependencies
+  spec.add_runtime_dependency "pdf-reader", "~> 3.0"
+  spec.add_runtime_dependency "rtesseract", "~> 5.0"
+  spec.add_runtime_dependency "mini_magick", "~> 4.11"
 
   # Development dependencies
-  spec.add_development_dependency "rspec", "~> 3.0"
-  spec.add_development_dependency "rake", "~> 13.0"
+  spec.add_development_dependency "rspec", "~> 3.13"
+  spec.add_development_dependency "byebug", "~> 11.1"
 end
