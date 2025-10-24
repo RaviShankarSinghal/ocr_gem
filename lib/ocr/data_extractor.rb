@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "mini_magick"
 require "pdf/reader"
 require "rtesseract"
@@ -6,17 +8,49 @@ require "shellwords"
 require "tmpdir"
 
 module Ocr
+  ##
+  # DataExtractor handles PDF text extraction.
+  # It can parse regular PDFs or scanned PDFs using OCR.
+  #
+  # @example Extract text from a PDF
+  #   extractor = Ocr::DataExtractor.new("example.pdf")
+  #   result = extractor.call
+  #   if result["success"]
+  #     puts result["raw_text"]
+  #   else
+  #     puts result["message"]
+  #   end
+  #
   class DataExtractor
+    ##
+    # Initializes a new DataExtractor.
+    #
+    # @param document [String, File, IO] Path to a PDF file, File object, or IO object.
+    #
     def initialize(document)
       @document = document
     end
 
+    ##
+    # Main method to extract text from the PDF.
+    #
+    # @return [Hash] Result hash containing:
+    #   - "success" [Boolean]
+    #   - "raw_text" [String] if extraction succeeded
+    #   - "message" [String] if extraction failed
+    #
     def call
       ocr_data(@document)
     end
 
     private
 
+    ##
+    # Handles parsing the PDF and determining if OCR is needed.
+    #
+    # @param document [String, File, IO] The PDF document
+    # @return [Hash]
+    #
     def ocr_data(document)
       extracted_text = ""
       is_scanned = false
@@ -48,6 +82,13 @@ module Ocr
       scanned_pdf_ocr(file)
     end
 
+    ##
+    # Returns a File object from the given document
+    #
+    # @param document [String, File, IO]
+    # @return [File]
+    # @raise [ArgumentError] if the type is unsupported
+    #
     def get_file_from(document)
       return document.tap(&:open) if document.respond_to?(:open)
       return document if document.is_a?(File)
@@ -57,23 +98,47 @@ module Ocr
       raise ArgumentError, "Unsupported document type: #{document.class}"
     end
 
+    ##
+    # Safely extract text from a PDF page
+    #
+    # @param page [PDF::Reader::Page]
+    # @return [String]
+    #
     def safe_page_text(page)
       page.text.to_s.encode("UTF-8", invalid: :replace, undef: :replace, replace: "")
     rescue
       ""
     end
 
+    ##
+    # Determine if a PDF is likely scanned
+    #
+    # @param text [String]
+    # @return [Boolean]
+    #
     def scanned_pdf?(text)
       return true if text.empty?
       junk_ratio = text.count("^A-Za-z0-9\s").to_f / text.size
       junk_ratio > 0.5 || text.size < 100
     end
 
+    ##
+    # Check if the page is mostly non-text content
+    #
+    # @param text [String]
+    # @return [Boolean]
+    #
     def mostly_junk?(text)
       return true if text.empty?
       text.scan(/[A-Za-z]/).count < (text.size * 0.2)
     end
 
+    ##
+    # Perform OCR on scanned PDFs
+    #
+    # @param file [File, String]
+    # @return [Hash]
+    #
     def scanned_pdf_ocr(file)
       images = []
       full_text = ""
@@ -94,12 +159,24 @@ module Ocr
       cleanup(images)
     end
 
+    ##
+    # Convert PDF to PNG images
+    #
+    # @param pdf_path [String]
+    # @return [Array<String>] List of image paths
+    #
     def convert_pdf_to_images(pdf_path)
       output_prefix = File.join(Dir.tmpdir, "ocr_page_#{SecureRandom.hex(4)}")
       system("pdftoppm -png -r 300 #{Shellwords.escape(pdf_path)} #{Shellwords.escape(output_prefix)}")
       Dir["#{output_prefix}-*.png"]
     end
 
+    ##
+    # Extract text from an image using Tesseract
+    #
+    # @param image_path [String]
+    # @return [String]
+    #
     def extract_text(image_path)
       RTesseract.new(image_path, lang: "eng", processor: "mini_magick").to_s
     rescue => e
@@ -107,10 +184,20 @@ module Ocr
       ""
     end
 
+    ##
+    # Cleanup temporary images
+    #
+    # @param images [Array<String>]
+    #
     def cleanup(images)
       images&.each { |img| File.delete(img) if File.exist?(img) }
     end
 
+    ##
+    # Log warnings to Rails logger or stderr
+    #
+    # @param message [String]
+    #
     def log_warning(message)
       if defined?(Rails)
         Rails.logger.warn(message)
