@@ -1,4 +1,4 @@
-# OCR
+# PDF OCR
 
 A lightweight Ruby gem for extracting text from PDFs, including scanned PDFs using OCR.
 
@@ -25,12 +25,12 @@ This gem supports:
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'ocr'
+gem 'pdf_ocr'
 ```
 
 Or install directly:
 ```ruby
-gem install ocr
+gem install pdf_ocr
 ```
 
 ## Dependencies
@@ -46,7 +46,7 @@ gem install ocr
 
 ## ⚙️ Usage
 ```ruby
-require 'ocr'
+require 'pdf_ocr'
 require 'stringio'
 
 # From a File object
