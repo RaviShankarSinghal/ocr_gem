@@ -1,31 +1,138 @@
-# Ocr
+# OCR
 
-TODO: Delete this and the text below, and describe your gem
+A lightweight Ruby gem for extracting text from PDFs, including scanned PDFs using OCR.
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/ocr`. To experiment with that code, run `bin/console` for an interactive prompt.
+This gem supports:
 
-## Installation
+- PDFs with readable text
+- Scanned PDFs using Tesseract OCR
+- File objects, file paths, StringIO, and Rails/ActiveStorage uploads
+- Fully Rails-independent
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+---
 
-Install the gem and add to the application's Gemfile by executing:
+## 🚀 Features
 
-    $ bundle add UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
+- Detect if PDF is scanned or text-based
+- Extract text from normal PDFs using `PDF::Reader`
+- Extract text from scanned PDFs using `RTesseract` and `MiniMagick`
+- Automatic cleanup of temporary images
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+---
 
-    $ gem install UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
+## 💻 Installation
 
-## Usage
+Add this line to your application's Gemfile:
 
-TODO: Write usage instructions here
+```ruby
+gem 'ocr', git: 'https://github.com/your_username/ocr.git'
+```
 
-## Development
+Or install directly:
+```ruby
+gem install ocr
+```
 
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+## Dependencies
+- PDF::Reader
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+- RTesseract
 
-## Contributing
+- MiniMagick
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/ocr.
+- Tesseract OCR (system-level executable)
+
+- pdftoppm from Poppler utils (for converting PDF pages to images)
+
+## ⚙️ Usage
+```ruby
+require 'ocr'
+require 'stringio'
+
+# From a File object
+file = File.open("path/to/document.pdf")
+result = Ocr::DataExtractor.new(file).call
+puts result["raw_text"] if result["success"]
+
+# From a file path string
+result = Ocr::DataExtractor.new("path/to/document.pdf").call
+
+# From a StringIO object (in-memory PDF)
+pdf_data = StringIO.new(File.read("path/to/document.pdf"))
+result = Ocr::DataExtractor.new(pdf_data).call
+```
+
+## Example Result
+```ruby
+{
+  "success" => true,
+  "raw_text" => "Extracted text content from PDF ..."
+}
+```
+- If OCR fails for a scanned PDF:
+```ruby
+{
+  "success" => false,
+  "message" => "Unable to extract text using OCR"
+}
+```
+## 🔧 Notes
+1. Ensure Tesseract OCR is installed on your system:
+```
+# Ubuntu/Debian
+sudo apt install tesseract-ocr
+
+# MacOS (with Homebrew)
+brew install tesseract
+```
+2. Ensure pdftoppm is installed (for PDF-to-image conversion):
+```
+# Ubuntu/Debian
+sudo apt install poppler-utils
+
+# MacOS (with Homebrew)
+brew install poppler
+```
+3. This gem does not require Rails, but it will work with Rails ActiveStorage objects that respond to .open.
+
+## 🧪 Running Tests
+```
+bundle install
+bundle exec rspec
+```
+
+- PDFs with selectable text
+
+- Scanned PDFs
+
+- Malformed PDFs (fallback to OCR)
+
+## 📝 Contributing
+
+- Fork the repository
+
+- Create your feature branch (git checkout -b your-feature)
+
+- Commit your changes (git commit -am 'Add new feature')
+
+- Push to the branch (git push origin your-feature)
+
+- Open a Pull Request
+
+## 📝 License
+
+MIT License © RaviShankarSinghal
+
+
+---
+
+This version includes:
+
+- Version and build badges (replace with your repo info)  
+- Clear installation instructions  
+- Usage examples for File, path, and StringIO  
+- System dependencies  
+- Test instructions  
+- Contributing guidelines  
+
+---
