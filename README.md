@@ -25,7 +25,7 @@ This gem supports:
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'ocr', git: 'https://github.com/your_username/ocr.git'
+gem 'ocr'
 ```
 
 Or install directly:
