@@ -119,6 +119,15 @@ bundle exec rspec
 
 - Open a Pull Request
 
+## 🧑‍💼 Author
+```
+Ravi Shankar Singhal
+Senior Backend Developer — Ruby on Rails
+📧 ravi.singhal2308@gmail.com
+
+🌐 https://github.com/RaviShankarSinghal
+```
+
 ## 📝 License
 
 MIT License © RaviShankarSinghal
@@ -134,5 +143,5 @@ This version includes:
 - System dependencies  
 - Test instructions  
 - Contributing guidelines  
-
+- The gem is available as open source under the terms of the MIT License.
 ---
