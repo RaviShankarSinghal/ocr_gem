@@ -3,7 +3,7 @@
 require_relative "lib/ocr/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "ocr"
+  spec.name          = "pdf_ocr"
   spec.version       = Ocr::VERSION
   spec.authors       = ["Ravi Shankar Singhal"]
   spec.email         = ["ravi.singhal2308@gmail.com"]
@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
     "homepage_uri"   => spec.homepage,
     "source_code_uri" => "https://github.com/RaviShankarSinghal/ocr_gem",
     "changelog_uri"   => "https://github.com/RaviShankarSinghal/ocr_gem/blob/main/CHANGELOG.md",
-    "documentation_uri" => "https://rubydoc.info/gems/ocr"
+    "documentation_uri" => "https://rubydoc.info/gems/pdf_ocr/#{spec.version}"
   }
 
   spec.files = Dir.chdir(__dir__) do

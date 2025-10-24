@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ocr (0.1.0)
+    pdf_ocr (0.1.0)
       mini_magick
       pdf-reader
       rtesseract
@@ -53,8 +53,8 @@ PLATFORMS
 DEPENDENCIES
   byebug
   mini_magick
-  ocr!
   pdf-reader
+  pdf_ocr!
   rake (~> 13.0)
   rspec
   rtesseract
