@@ -1,8 +1,9 @@
-require "ocr_extractor/version"
+require "mini_magick"
 require "pdf/reader"
 require "rtesseract"
 require "securerandom"
 require "shellwords"
+require "tmpdir"
 
 module Ocr
   class DataExtractor
@@ -20,28 +21,40 @@ module Ocr
       extracted_text = ""
       is_scanned = false
 
-      document.file.open do |file|
-        reader = PDF::Reader.new(file.path)
+      file = get_file_from(document)
+      reader = if file.respond_to?(:path)
+                PDF::Reader.new(file.path)
+              else
+                PDF::Reader.new(file)
+              end
 
-        reader.pages.each do |page|
-          page_text = safe_page_text(page)
-          extracted_text << " " << page_text
+      reader.pages.each do |page|
+        page_text = safe_page_text(page)
+        extracted_text << " " << page_text
 
-          if page_text.blank? || mostly_junk?(page_text)
-            is_scanned = true
-            break
-          end
+        if page_text.strip.empty? || mostly_junk?(page_text)
+          is_scanned = true
+          break
         end
       end
 
       if is_scanned || scanned_pdf?(extracted_text)
-        scanned_pdf_ocr(document)
+        scanned_pdf_ocr(file)
       else
         { "success" => true, "raw_text" => extracted_text.strip }
       end
     rescue PDF::Reader::MalformedPDFError, PDF::Reader::UnsupportedFeatureError => e
-      Rails.logger.warn "PDF parsing failed: #{e.message}" if defined?(Rails)
-      scanned_pdf_ocr(document)
+      log_warning "PDF parsing failed: #{e.message}"
+      scanned_pdf_ocr(file)
+    end
+
+    def get_file_from(document)
+      return document.tap(&:open) if document.respond_to?(:open)
+      return document if document.is_a?(File)
+      return document if document.respond_to?(:read)
+      return File.open(document) if document.is_a?(String)
+
+      raise ArgumentError, "Unsupported document type: #{document.class}"
     end
 
     def safe_page_text(page)
@@ -51,26 +64,28 @@ module Ocr
     end
 
     def scanned_pdf?(text)
-      return true if text.blank?
+      return true if text.empty?
       junk_ratio = text.count("^A-Za-z0-9\s").to_f / text.size
       junk_ratio > 0.5 || text.size < 100
     end
 
     def mostly_junk?(text)
-      return true if text.blank?
+      return true if text.empty?
       text.scan(/[A-Za-z]/).count < (text.size * 0.2)
     end
 
-    def scanned_pdf_ocr(document)
+    def scanned_pdf_ocr(file)
       images = []
-      full_text = nil
+      full_text = ""
 
-      document.file.open do |file|
-        images = convert_pdf_to_images(file.path)
-        full_text = images.map { |img| extract_text(img) }.join("\n")
-      end
+      images = if file.respond_to?(:path)
+                convert_pdf_to_images(file.path)
+              else
+                convert_pdf_to_images(file)
+              end
+      full_text += images.map { |img| extract_text(img) }.join(" ")
 
-      if full_text.present?
+      unless full_text.strip.empty?
         { "success" => true, "raw_text" => full_text.strip }
       else
         { "success" => false, "message" => "Unable to extract text using OCR" }
@@ -86,14 +101,22 @@ module Ocr
     end
 
     def extract_text(image_path)
-      RTesseract.new(image_path, lang: "eng").to_s
+      RTesseract.new(image_path, lang: "eng", processor: "mini_magick").to_s
     rescue => e
-      Rails.logger.warn "OCR failed on #{image_path}: #{e.message}" if defined?(Rails)
+      log_warning "OCR failed on #{image_path}: #{e.message}"
       ""
     end
 
     def cleanup(images)
       images&.each { |img| File.delete(img) if File.exist?(img) }
+    end
+
+    def log_warning(message)
+      if defined?(Rails)
+        Rails.logger.warn(message)
+      else
+        warn(message)
+      end
     end
   end
 end

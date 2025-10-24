@@ -2,8 +2,9 @@ PATH
   remote: .
   specs:
     ocr (0.1.0)
-      mini_magick (~> 4.11)
-      rtesseract (~> 2.0)
+      mini_magick
+      pdf-reader
+      rtesseract
 
 GEM
   remote: https://rubygems.org/

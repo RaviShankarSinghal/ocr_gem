@@ -35,11 +35,12 @@ Gem::Specification.new do |spec|
 
   # Common dependencies for OCR-based Ruby gems
   # Runtime dependencies
-  spec.add_runtime_dependency "pdf-reader", "~> 3.0"
-  spec.add_runtime_dependency "rtesseract", "~> 5.0"
-  spec.add_runtime_dependency "mini_magick", "~> 4.11"
+  spec.add_runtime_dependency "pdf-reader"
+  spec.add_runtime_dependency "mini_magick"
+  spec.add_runtime_dependency "rtesseract"
 
   # Development dependencies
-  spec.add_development_dependency "rspec", "~> 3.13"
-  spec.add_development_dependency "byebug", "~> 11.1"
+  spec.add_development_dependency "rspec"
+  spec.add_development_dependency "byebug"
+
 end
