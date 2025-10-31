@@ -93,7 +93,15 @@ sudo apt install poppler-utils
 # MacOS (with Homebrew)
 brew install poppler
 ```
-3. This gem does not require Rails, but it will work with Rails ActiveStorage objects that respond to .open.
+3. Ensure ImageMagick is installed ( for images):
+   ```
+    # Ubuntu/Debian
+    sudo apt install imagemagick
+    
+    # MacOS (with Homebrew)
+    brew install imagemagick
+   ```
+4. This gem does not require Rails, but it will work with Rails ActiveStorage objects that respond to .open.
 
 ## 🧪 Running Tests
 ```
