@@ -78,21 +78,21 @@ result = Ocr::DataExtractor.new(pdf_data).call
 ```
 ## 🔧 Notes
 1. Ensure Tesseract OCR is installed on your system:
-```
-# Ubuntu/Debian
-sudo apt install tesseract-ocr
-
-# MacOS (with Homebrew)
-brew install tesseract
-```
+   ```
+    # Ubuntu/Debian
+    sudo apt install tesseract-ocr
+    
+    # MacOS (with Homebrew)
+    brew install tesseract
+   ```
 2. Ensure pdftoppm is installed (for PDF-to-image conversion):
-```
-# Ubuntu/Debian
-sudo apt install poppler-utils
-
-# MacOS (with Homebrew)
-brew install poppler
-```
+   ```
+    # Ubuntu/Debian
+    sudo apt install poppler-utils
+  
+    # MacOS (with Homebrew)
+    brew install poppler
+   ```
 3. Ensure ImageMagick is installed ( for images):
    ```
     # Ubuntu/Debian
