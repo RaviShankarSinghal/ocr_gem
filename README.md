@@ -46,7 +46,7 @@ gem install pdf_ocr
 
 ## ⚙️ Usage
 ```ruby
-require 'pdf_ocr'
+require 'ocr'
 require 'stringio'
 
 # From a File object

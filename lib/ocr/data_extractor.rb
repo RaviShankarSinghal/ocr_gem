@@ -52,7 +52,7 @@ module Ocr
     # @return [Hash]
     #
     def ocr_data(document)
-      extracted_text = ""
+      extracted_text = String.new
       is_scanned = false
 
       file = get_file_from(document)
