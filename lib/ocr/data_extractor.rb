@@ -75,7 +75,7 @@ module Ocr
       if is_scanned || scanned_pdf?(extracted_text)
         scanned_pdf_ocr(file)
       else
-        { "success" => true, "raw_text" => extracted_text.strip }
+        { "success" => true, "raw_text" => clean(extracted_text) }
       end
     rescue PDF::Reader::MalformedPDFError, PDF::Reader::UnsupportedFeatureError => e
       log_warning "PDF parsing failed: #{e.message}"
@@ -151,7 +151,7 @@ module Ocr
       full_text += images.map { |img| extract_text(img) }.join(" ")
 
       unless full_text.strip.empty?
-        { "success" => true, "raw_text" => full_text.strip }
+        { "success" => true, "raw_text" => clean(full_text) }
       else
         { "success" => false, "message" => "Unable to extract text using OCR" }
       end
@@ -204,6 +204,18 @@ module Ocr
       else
         warn(message)
       end
+    end
+
+    def clean(raw_text)
+      return "" if raw_text.empty?
+
+      raw_text
+        .gsub(/\n+/, " ")
+        .gsub(/\s+/, " ")
+        .gsub(/-\s+/, "")
+        .gsub(" . .", ".00")
+        .encode("UTF-8", invalid: :replace, undef: :replace, replace: "")
+        .strip
     end
   end
 end
